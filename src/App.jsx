@@ -6,6 +6,7 @@ function App() {
 useEffect(() => {
   const applySession = async (currentSession) => {
     setSession(currentSession)
+    setAuthChecked(true)
 
     if (!currentSession?.user) {
       setUserMode('login')
@@ -100,6 +101,7 @@ if (infoError) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [session, setSession] = useState(null)
+  const [authChecked, setAuthChecked] = useState(false)
   const [projects, setProjects] = useState([])
 const [selectedProject, setSelectedProject] = useState(null)
   const [showStepForm, setShowStepForm] = useState(false)
@@ -188,6 +190,10 @@ const handleLogin = async () => {
 
   setSession(data.session)
   setUserMode('bie')
+}
+
+if (!authChecked) {
+  return <div className="login-box"><h2>Cargando portal...</h2></div>
 }
 
 if (!session) {
