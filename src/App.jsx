@@ -4,13 +4,34 @@ import { supabase } from './supabase'
 
 function App() {
 useEffect(() => {
+  const applySession = async (currentSession) => {
+    setSession(currentSession)
+
+    if (!currentSession?.user) {
+      setUserMode('login')
+      return
+    }
+
+    const { data: profile, error } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', currentSession.user.id)
+      .single()
+
+    if (error) {
+      console.error('Error al cargar rol:', error)
+      return
+    }
+
+    setUserMode(profile.role)
+  }
+
   supabase.auth.getSession().then(({ data }) => {
-    setSession(data.session)
-    if (data.session) setUserMode('bie')
+    applySession(data.session)
   })
 
   const { data: listener } = supabase.auth.onAuthStateChange((_event, currentSession) => {
-    setSession(currentSession)
+    applySession(currentSession)
   })
 
   return () => listener.subscription.unsubscribe()
