@@ -78,25 +78,9 @@ if (infoError) {
       .map((item) => item.name)
   )
 }
-        let projectsQuery = supabase
+        const { data: projectsData, error: projectsError } = await supabase
       .from('projects')
       .select('*')
-
-    if (userMode === 'client' && session?.user) {
-      const { data: memberships, error: membershipsError } = await supabase
-        .from('project_memberships')
-        .select('project_id')
-        .eq('user_id', session.user.id)
-
-      if (membershipsError) {
-        console.error('Error al cargar proyectos del cliente:', membershipsError)
-      } else {
-        const projectIds = memberships.map((item) => item.project_id)
-        projectsQuery = projectsQuery.in('id', projectIds.length > 0 ? projectIds : [-1])
-      }
-    }
-
-    const { data: projectsData, error: projectsError } = await projectsQuery
 
     if (projectsError) {
       console.error('Error al cargar proyectos:', projectsError)
@@ -109,10 +93,8 @@ if (infoError) {
     }
   }
 
-  if (authChecked && session && userMode !== 'login') {
-    loadData()
-  }
-}, [authChecked, session, userMode])
+  loadData()
+}, [])
 
   const [activeSection, setActiveSection] = useState('overview')
   const [userMode, setUserMode] = useState('client')
