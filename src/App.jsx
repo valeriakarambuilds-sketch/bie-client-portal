@@ -305,24 +305,14 @@ return (
         <header className="topbar">
           <div className="view-switcher">
   <button
-    className={userMode === 'client' ? 'selected' : ''}
-    onClick={() => setUserMode('client')}
-  >
-    Vista Cliente
-  </button>
-
-  <button
-  className={userMode === 'bie' ? 'selected' : ''}
-  onClick={() => {
-    if (session) {
-      setUserMode('bie')
-    } else {
+    onClick={async () => {
+      await supabase.auth.signOut()
+      setSession(null)
       setUserMode('login')
-    }
-  }}
->
-  Vista BIE
-</button>
+    }}
+  >
+    Cerrar sesión
+  </button>
 </div>
 {userMode === 'bie' && projects.length > 0 && (
   <div className="project-selector">
