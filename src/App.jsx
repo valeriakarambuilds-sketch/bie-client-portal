@@ -619,15 +619,20 @@ if (infoError) {
                     </div>
                   {userMode === 'bie' && (
   <button
-    onClick={() => {
-      const updatedMeetings = meetingNotes.filter(
-        (item) =>
-          !(
-            item.date === meeting.date &&
-            item.title === meeting.title
-          )
+    onClick={async () => {
+      const { error } = await supabase
+        .from('meeting_notes')
+        .delete()
+        .eq('id', meeting.id)
+
+      if (error) {
+        console.error('Error al eliminar nota:', error)
+        return
+      }
+
+      setMeetingNotes(
+        meetingNotes.filter((item) => item.id !== meeting.id)
       )
-      setMeetingNotes(updatedMeetings)
     }}
   >
     Eliminar
