@@ -760,12 +760,25 @@ if (infoError) {
   {userMode === 'bie' ? (
     <select
       value={step.status}
-      onChange={(e) => {
+      onChange={async (e) => {
+        const newStatus = e.target.value
+
+        const { error } = await supabase
+          .from('next_steps')
+          .update({ status: newStatus })
+          .eq('id', step.id)
+
+        if (error) {
+          console.error('Error al actualizar estatus:', error)
+          return
+        }
+
         const updatedSteps = nextSteps.map((item) =>
-          item.task === step.task
-            ? { ...item, status: e.target.value }
+          item.id === step.id
+            ? { ...item, status: newStatus }
             : item
         )
+
         setNextSteps(updatedSteps)
       }}
     >
