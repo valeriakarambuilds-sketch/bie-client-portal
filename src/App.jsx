@@ -4,6 +4,19 @@ import { supabase } from './supabase'
 
 function App() {
 useEffect(() => {
+  supabase.auth.getSession().then(({ data }) => {
+    setSession(data.session)
+    if (data.session) setUserMode('bie')
+  })
+
+  const { data: listener } = supabase.auth.onAuthStateChange((_event, currentSession) => {
+    setSession(currentSession)
+  })
+
+  return () => listener.subscription.unsubscribe()
+}, [])
+
+useEffect(() => {
   const loadData = async () => {
     const { data: meetingsData, error: meetingsError } = await supabase
       .from('meeting_notes')
@@ -24,6 +37,25 @@ useEffect(() => {
     } else {
       setNextSteps(stepsData)
     }
+    const { data: infoData, error: infoError } = await supabase
+  .from('project_information')
+  .select('*')
+
+if (infoError) {
+  console.error('Error al cargar información del proyecto:', infoError)
+} else {
+  setReceivedInfo(
+    infoData
+      .filter((item) => item.status === 'Recibido')
+      .map((item) => item.name)
+  )
+
+  setPendingInfo(
+    infoData
+      .filter((item) => item.status === 'Pendiente')
+      .map((item) => item.name)
+  )
+}
         const { data: projectsData, error: projectsError } = await supabase
       .from('projects')
       .select('*')
@@ -101,19 +133,8 @@ const [newMeeting, setNewMeeting] = useState({
 
 const [meetingNotes, setMeetingNotes] = useState([])
 
-  const [receivedInfo, setReceivedInfo] = useState([
-    'Estados financieros 2023',
-    'Estados financieros 2024',
-    'Balance general 2025',
-    'Detalle de costos y gastos',
-    'Proyecciones preliminares',
-  ])
-
-  const [pendingInfo, setPendingInfo] = useState([
-    'Ventas por línea de negocio',
-    'Detalle de CAPEX 2025–2026',
-    'Información de deuda bancaria',
-  ])
+  const [receivedInfo, setReceivedInfo] = useState([])
+const [pendingInfo, setPendingInfo] = useState([])
 
   const [models, setModels] = useState([
     {
@@ -283,6 +304,26 @@ if (stepsError) {
 } else {
   setNextSteps(stepsData)
 }
+const { data: infoData, error: infoError } = await supabase
+  .from('project_information')
+  .select('*')
+  .eq('project_id', project.id)
+
+if (infoError) {
+  console.error('Error al cargar información:', infoError)
+} else {
+  setReceivedInfo(
+    infoData
+      .filter((item) => item.status === 'Recibido')
+      .map((item) => item.name)
+  )
+
+  setPendingInfo(
+    infoData
+      .filter((item) => item.status === 'Pendiente')
+      .map((item) => item.name)
+  )
+}
 }}
     >
       {projects.map((project) => (
@@ -374,8 +415,7 @@ if (stepsError) {
 
               <div className="progress-box">
                 <span>Avance general</span>
-                <strong>65%</strong>
-                <div className="progress">
+                <strong>{selectedProject?.progress ?? 0}%</strong>                <div className="progress">
                   <div className="progress-fill"></div>
                 </div>
               </div>
@@ -384,7 +424,7 @@ if (stepsError) {
             <section className="metrics">
               <div className="metric-card">
                 <span>Etapa actual</span>
-                <strong>Modelo financiero</strong>
+               <strong>{selectedProject?.stage || 'Sin definir'}</strong>
                 <p>Actualización de proyecciones</p>
               </div>
 
@@ -396,13 +436,13 @@ if (stepsError) {
 
               <div className="metric-card">
                 <span>Información pendiente</span>
-                <strong>3 documentos</strong>
+               <strong>{pendingInfo.length} documentos</strong>
                 <p>Por parte del cliente</p>
               </div>
 
               <div className="metric-card">
                 <span>Última junta</span>
-                <strong>24 Oct 2026</strong>
+               <strong>{meetingNotes[0]?.date || 'Sin juntas'}</strong>
                 <p>Junta de seguimiento</p>
               </div>
             </section>
@@ -745,16 +785,27 @@ if (stepsError) {
   )}
 </span>
 {userMode === 'bie' && (
-  <button
-    onClick={() => {
-      const updatedSteps = nextSteps.filter(
-        (item) => item.task !== step.task
-      )
-      setNextSteps(updatedSteps)
-    }}
-  >
-    Eliminar
-  </button>
+<button
+  onClick={async () => {
+    const { error } = await supabase
+      .from('next_steps')
+      .delete()
+      .eq('id', step.id)
+
+    if (error) {
+      console.error('Error al eliminar siguiente paso:', error)
+      return
+    }
+
+    const updatedSteps = nextSteps.filter(
+      (item) => item.id !== step.id
+    )
+
+    setNextSteps(updatedSteps)
+  }}
+>
+  Eliminar
+</button>
 )}
                 </div>
               ))}
@@ -795,7 +846,7 @@ if (stepsError) {
         }
       >
         <option>Pendiente</option>
-        <option>Recibida</option>
+        <option>Recibido</option>
       </select>
     </div>
     <div className="form-field">
@@ -811,11 +862,31 @@ if (stepsError) {
       </button>
 
     <button
-  onClick={() => {
-    if (newInfo.status === 'Recibida') {
-      setReceivedInfo([...receivedInfo, newInfo.name])
+  onClick={async () => {
+    if (!selectedProject || !newInfo.name.trim()) return
+
+    const { data, error } = await supabase
+      .from('project_information')
+      .insert([
+        {
+          name: newInfo.name.trim(),
+          status: newInfo.status,
+          project_id: selectedProject.id,
+        },
+      ])
+      .select()
+
+    if (error) {
+      console.error('Error al guardar información:', error)
+      return
+    }
+
+    const savedItem = data[0]
+
+    if (savedItem.status === 'Recibido') {
+      setReceivedInfo([...receivedInfo, savedItem.name])
     } else {
-      setPendingInfo([...pendingInfo, newInfo.name])
+      setPendingInfo([...pendingInfo, savedItem.name])
     }
 
     setNewInfo({
@@ -842,31 +913,53 @@ if (stepsError) {
 
    {userMode === 'bie' && (
   <div className="info-actions">
-    <button
-      onClick={() => {
-        setReceivedInfo(
-          receivedInfo.filter(
-            (receivedItem) => receivedItem !== item
-          )
-        )
+ <button
+  onClick={async () => {
+    const { error } = await supabase
+      .from('project_information')
+      .update({ status: 'Pendiente' })
+      .eq('project_id', selectedProject.id)
+      .eq('name', item)
 
-        setPendingInfo([...pendingInfo, item])
-      }}
-    >
-      Marcar como pendiente
-    </button>
+    if (error) {
+      console.error('Error al actualizar información:', error)
+      return
+    }
 
-    <button
-      onClick={() => {
-        setReceivedInfo(
-          receivedInfo.filter(
-            (receivedItem) => receivedItem !== item
-          )
-        )
-      }}
-    >
-      Eliminar
-    </button>
+    setReceivedInfo(
+      receivedInfo.filter(
+        (receivedItem) => receivedItem !== item
+      )
+    )
+
+    setPendingInfo([...pendingInfo, item])
+  }}
+>
+  Marcar como pendiente
+</button>
+
+<button
+  onClick={async () => {
+    const { error } = await supabase
+      .from('project_information')
+      .delete()
+      .eq('project_id', selectedProject.id)
+      .eq('name', item)
+
+    if (error) {
+      console.error('Error al eliminar información:', error)
+      return
+    }
+
+    setReceivedInfo(
+      receivedInfo.filter(
+        (receivedItem) => receivedItem !== item
+      )
+    )
+  }}
+>
+  Eliminar
+</button>
   </div>
 )}
   </div>
@@ -881,31 +974,53 @@ if (stepsError) {
     <p>{item}</p>
 {userMode === 'bie' && (
   <div className="info-actions">
-    <button
-      onClick={() => {
-        setPendingInfo(
-          pendingInfo.filter(
-            (pendingItem) => pendingItem !== item
-          )
-        )
+<button
+  onClick={async () => {
+    const { error } = await supabase
+      .from('project_information')
+      .update({ status: 'Recibido' })
+      .eq('project_id', selectedProject.id)
+      .eq('name', item)
 
-        setReceivedInfo([...receivedInfo, item])
-      }}
-    >
-      Marcar como recibida
-    </button>
+    if (error) {
+      console.error('Error al actualizar información:', error)
+      return
+    }
 
-    <button
-      onClick={() => {
-        setPendingInfo(
-          pendingInfo.filter(
-            (pendingItem) => pendingItem !== item
-          )
-        )
-      }}
-    >
-      Eliminar
-    </button>
+    setPendingInfo(
+      pendingInfo.filter(
+        (pendingItem) => pendingItem !== item
+      )
+    )
+
+    setReceivedInfo([...receivedInfo, item])
+  }}
+>
+  Marcar como recibida
+</button>
+
+<button
+  onClick={async () => {
+    const { error } = await supabase
+      .from('project_information')
+      .delete()
+      .eq('project_id', selectedProject.id)
+      .eq('name', item)
+
+    if (error) {
+      console.error('Error al eliminar información:', error)
+      return
+    }
+
+    setPendingInfo(
+      pendingInfo.filter(
+        (pendingItem) => pendingItem !== item
+      )
+    )
+  }}
+>
+  Eliminar
+</button>
   </div>
 )}
   </div>
