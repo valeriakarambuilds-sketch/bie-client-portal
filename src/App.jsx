@@ -169,32 +169,6 @@ const handleLogin = async () => {
   setUserMode('bie')
 }
 
-if (!session) {
-  return (
-    <div className="login-box">
-      <h2>Acceso BIE</h2>
-
-      <input
-        type="email"
-        placeholder="Correo"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
-
-      <input
-        type="password"
-        placeholder="Contraseña"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
-
-      <button onClick={handleLogin}>
-        Iniciar sesión
-      </button>
-    </div>
-  )
-}
-
 return (
   <>
    {userMode === 'login' && !session && (
