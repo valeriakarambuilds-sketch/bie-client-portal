@@ -85,6 +85,33 @@ if (infoError) {
     if (projectsError) {
       console.error('Error al cargar proyectos:', projectsError)
     } else {
+      const { data: currentSession } = await supabase.auth.getSession()
+      const currentUser = currentSession.session?.user
+
+      if (currentUser) {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', currentUser.id)
+          .single()
+
+        if (profile?.role === 'client') {
+          const { data: memberships } = await supabase
+            .from('project_memberships')
+            .select('project_id')
+            .eq('user_id', currentUser.id)
+
+          const allowedIds = memberships?.map((item) => item.project_id) || []
+          const allowedProjects = projectsData.filter((project) =>
+            allowedIds.includes(project.id)
+          )
+
+          setProjects(allowedProjects)
+          setSelectedProject(allowedProjects[0] || null)
+          return
+        }
+      }
+
       setProjects(projectsData)
 
       if (projectsData.length > 0) {
