@@ -153,6 +153,7 @@ const [newModel, setNewModel] = useState({
   updated: '',
   status: 'En proceso',
 })
+const [modelFile, setModelFile] = useState(null)
 
 const [newInfo, setNewInfo] = useState({
   name: '',
@@ -1161,6 +1162,15 @@ if (infoError) {
         <option>En revisión</option>
         <option>Completado</option>
       </select>
+    </div>
+
+    <div className="form-field">
+      <label>Archivo del modelo</label>
+      <input
+        type="file"
+        accept=".pdf,.xlsx,.xls"
+        onChange={(e) => setModelFile(e.target.files?.[0] || null)}
+      />
     </div>
 
     <div className="form-actions">
