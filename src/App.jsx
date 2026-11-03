@@ -39,6 +39,8 @@ useEffect(() => {
 }, [])
 
 useEffect(() => {
+  if (!authChecked || !session) return
+
   const loadData = async () => {
     const { data: meetingsData, error: meetingsError } = await supabase
       .from('meeting_notes')
@@ -121,7 +123,7 @@ if (infoError) {
   }
 
   loadData()
-}, [])
+}, [authChecked, session])
 
   const [activeSection, setActiveSection] = useState('overview')
   const [userMode, setUserMode] = useState('client')
