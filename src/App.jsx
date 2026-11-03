@@ -715,9 +715,9 @@ if (infoError) {
         {activeSection === 'steps' && (
           <section className="content-section">
             <p className="section-label">SEGUIMIENTO</p>
-            <h3>Siguientes pasos</h3>
+            <h3>Siguientes pasos de BIE</h3>
             <p className="section-description">
-              Actividades acordadas, responsables y fechas de seguimiento.
+              Actividades que BIE realizará para continuar con el proyecto.
             </p>
             {userMode === 'bie' && showStepForm && (
   <div className="admin-form">
@@ -733,20 +733,6 @@ if (infoError) {
     setNewStep({ ...newStep, task: e.target.value })
   }
 />
-    </div>
-
-    <div className="form-field">
-      <label>Responsable</label>
-      <select
-        value={newStep.responsible}
-        onChange={(e) =>
-          setNewStep({ ...newStep, responsible: e.target.value })
-      }
-  >
-    <option>Cliente</option>
-    <option>BIE Asesores</option>
-    <option>Cliente / BIE</option>
-</select>
     </div>
 
     <div className="form-field">
@@ -786,6 +772,7 @@ if (infoError) {
   .insert([
     {
       ...newStep,
+      responsible: 'BIE Asesores',
       project_id: selectedProject.id,
     },
   ])
@@ -800,7 +787,7 @@ if (infoError) {
 
     setNewStep({
       task: '',
-      responsible: 'Cliente',
+      responsible: 'BIE Asesores',
       date: '',
       status: 'Pendiente',
     })
@@ -817,7 +804,6 @@ if (infoError) {
             <div className="table">
              <div className="table-row table-header">
   <span>Actividad</span>
-  <span>Responsable</span>
   <span>Fecha</span>
   <span>Estatus</span>
   {userMode === 'bie' && <span>Acción</span>}
@@ -826,7 +812,6 @@ if (infoError) {
               {nextSteps.map((step) => (
                 <div className="table-row" key={step.task}>
                   <strong>{step.task}</strong>
-                  <span>{step.responsible}</span>
                   <span>{step.date}</span>
                  <span>
   {userMode === 'bie' ? (
