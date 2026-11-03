@@ -1180,11 +1180,27 @@ if (infoError) {
 
     <button
   onClick={async () => {
+    let filePath = null
+
+    if (modelFile) {
+      filePath = `${selectedProject.id}/${Date.now()}-${modelFile.name}`
+
+      const { error: uploadError } = await supabase.storage
+        .from('project-models')
+        .upload(filePath, modelFile)
+
+      if (uploadError) {
+        console.error('Error al subir archivo del modelo:', uploadError)
+        return
+      }
+    }
+
     const { data, error } = await supabase
       .from('models')
       .insert({
         ...newModel,
         project_id: selectedProject.id,
+        file_path: filePath,
       })
       .select()
       .single()
@@ -1201,6 +1217,7 @@ if (infoError) {
       updated: '',
       status: 'En proceso',
     })
+    setModelFile(null)
 
     setShowModelForm(false)
   }}
