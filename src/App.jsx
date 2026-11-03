@@ -1287,20 +1287,24 @@ if (infoError) {
 {userMode === 'bie' && (
   <button
     onClick={async () => {
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('models')
         .delete()
         .eq('id', model.id)
+        .select()
 
       if (error) {
         console.error('Error al eliminar modelo:', error)
+        alert('No se pudo eliminar el modelo.')
         return
       }
 
-      const updatedModels = models.filter(
-        (item) => item.id !== model.id
-      )
-      setModels(updatedModels)
+      if (!data || data.length === 0) {
+        alert('Supabase no eliminó el modelo. Revisa los permisos de la cuenta BIE.')
+        return
+      }
+
+      setModels(models.filter((item) => item.id !== model.id))
     }}
   >
     Eliminar
