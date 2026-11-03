@@ -1169,8 +1169,22 @@ if (infoError) {
       </button>
 
     <button
-  onClick={() => {
-    setModels([...models, newModel])
+  onClick={async () => {
+    const { data, error } = await supabase
+      .from('models')
+      .insert({
+        ...newModel,
+        project_id: selectedProject.id,
+      })
+      .select()
+      .single()
+
+    if (error) {
+      console.error('Error al guardar modelo:', error)
+      return
+    }
+
+    setModels([...models, data])
 
     setNewModel({
       name: '',
