@@ -475,17 +475,16 @@ if (infoError) {
                 <span className="status-pill">En proceso</span>
                 <h3>Resumen del proyecto</h3>
                 <p>
-                  Seguimiento centralizado del proceso de valuación y de la
-                  información requerida para continuar con el análisis.
+                  Consulta en un solo lugar la información requerida para
+                  continuar con el proyecto, los principales pendientes, las
+                  últimas actualizaciones y los siguientes pasos.
                 </p>
               </div>
 
               <div className="progress-box">
-                <span>Modelos trabajados</span>
-                <strong>{models.length}</strong>
-                <p>
-                  {models.filter((model) => model.status === 'Completado').length} completados
-                </p>
+                <span>Información pendiente</span>
+                <strong>{pendingInfo.length} documentos</strong>
+                <p>Pendientes por recibir</p>
               </div>
             </section>
 
