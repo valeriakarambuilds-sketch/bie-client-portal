@@ -397,7 +397,7 @@ setModels(projectModels || [])
 </div>
 
 <div className="client">
-  <span>{userMode === 'bie' ? 'Vista BIE · Cliente' : 'Cliente'}</span>
+  <span>{userMode === 'bie' ? 'Vista BIE' : 'Cliente'}</span>
   <strong>
     {selectedProject?.client_name || ''}
   </strong>
