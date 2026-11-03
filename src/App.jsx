@@ -1235,6 +1235,24 @@ if (infoError) {
                   <h4>{model.name}</h4>
                   <p>Última actualización</p>
                   <strong>{model.updated}</strong>
+                  {model.file_path && (
+                    <button
+                      onClick={async () => {
+                        const { data, error } = await supabase.storage
+                          .from('project-models')
+                          .createSignedUrl(model.file_path, 60)
+
+                        if (error) {
+                          console.error('Error al abrir archivo:', error)
+                          return
+                        }
+
+                        window.open(data.signedUrl, '_blank')
+                      }}
+                    >
+                      Abrir archivo
+                    </button>
+                  )}
                   {userMode === 'bie' ? (
   <select
     value={model.status}
