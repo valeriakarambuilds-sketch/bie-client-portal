@@ -136,6 +136,40 @@ button {
   font-weight: 500;
 }
 
+.confidential-badge {
+  background: #7a263a;
+  color: white;
+  padding: 14px 15px;
+  border-radius: 9px;
+  margin-bottom: 12px;
+}
+
+.sidebar-footer .confidential-badge span {
+  color: white;
+  font-weight: 800;
+  margin-bottom: 6px;
+}
+
+.sidebar-footer .confidential-badge p {
+  color: rgba(255, 255, 255, 0.82);
+  margin: 0;
+}
+
+.sidebar .sidebar-logout {
+  width: 100%;
+  padding: 11px 14px;
+  border: 1px solid rgba(6, 45, 79, 0.18);
+  border-radius: 8px;
+  background: transparent;
+  text-align: left;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.sidebar .sidebar-logout:hover {
+  background: rgba(6, 45, 79, 0.07);
+}
+
 /* MAIN */
 
 .main {
