@@ -499,13 +499,13 @@ setModels(projectModels || [])
               <div className="metric-card">
                 <span>Etapa actual</span>
                <strong>{selectedProject?.stage || 'Sin definir'}</strong>
-                <p>Actualización de proyecciones</p>
+                <p>{selectedProject?.service_type || 'Proyecto en seguimiento'}</p>
               </div>
 
               <div className="metric-card">
                 <span>Próxima actividad</span>
-                <strong>Revisión de valuación</strong>
-                <p>31 Oct 2026</p>
+                <strong>{nextSteps[0]?.task || 'Sin actividades pendientes'}</strong>
+                <p>{nextSteps[0]?.date || 'Sin fecha definida'}</p>
               </div>
 
               <div className="metric-card">
@@ -517,7 +517,7 @@ setModels(projectModels || [])
               <div className="metric-card">
                 <span>Última junta</span>
                <strong>{meetingNotes[0]?.date || 'Sin juntas'}</strong>
-                <p>Junta de seguimiento</p>
+                <p>{meetingNotes[0]?.title || 'Sin juntas registradas'}</p>
               </div>
             </section>
 
