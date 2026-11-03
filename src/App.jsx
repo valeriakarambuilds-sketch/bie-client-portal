@@ -188,23 +188,7 @@ const [meetingNotes, setMeetingNotes] = useState([])
   const [receivedInfo, setReceivedInfo] = useState([])
 const [pendingInfo, setPendingInfo] = useState([])
 
-  const [models, setModels] = useState([
-    {
-      name: 'Modelo financiero',
-      updated: '26 Oct 2026',
-      status: 'En revisión',
-    },
-    {
-      name: 'Valuación DCF',
-      updated: '24 Oct 2026',
-      status: 'En proceso',
-    },
-    {
-      name: 'Múltiplos comparables',
-      updated: '24 Oct 2026',
-      status: 'Completado',
-    },
-  ])
+  const [models, setModels] = useState([])
 const handleLogin = async () => {
   const { data, error } = await supabase.auth.signInWithPassword({
     email,
