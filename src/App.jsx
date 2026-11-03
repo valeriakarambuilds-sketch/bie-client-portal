@@ -319,25 +319,25 @@ return (
         </nav>
 
         <div className="sidebar-footer">
-          <span>Portal confidencial</span>
-          <p>Última actualización</p>
-          <strong>27 Oct 2026</strong>
+          <div className="confidential-badge">
+            <span>Portal confidencial</span>
+            <p>Información exclusiva del proyecto</p>
+          </div>
+          <button
+            className="sidebar-logout"
+            onClick={async () => {
+              await supabase.auth.signOut()
+              setSession(null)
+              setUserMode('login')
+            }}
+          >
+            Cerrar sesión
+          </button>
         </div>
       </aside>
 
       <main className="main">
         <header className="topbar">
-          <div className="view-switcher">
-  <button
-    onClick={async () => {
-      await supabase.auth.signOut()
-      setSession(null)
-      setUserMode('login')
-    }}
-  >
-    Cerrar sesión
-  </button>
-</div>
 {userMode === 'bie' && projects.length > 0 && (
   <div className="project-selector">
     <label>Proyecto</label>
