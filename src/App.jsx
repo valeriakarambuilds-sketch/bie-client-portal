@@ -459,7 +459,7 @@ setModels(projectModels || [])
           <>
             <section className="hero">
               <div>
-                <span className="status-pill">En proceso</span>
+                <span className="status-pill">{selectedProject?.status || 'Sin estatus'}</span>
                 <h3>Resumen del proyecto</h3>
                 <p>
                   Consulta en un solo lugar la información requerida para
