@@ -391,6 +391,13 @@ if (infoError) {
       .map((item) => item.name)
   )
 }
+
+const { data: projectModels } = await supabase
+  .from('models')
+  .select('*')
+  .eq('project_id', project.id)
+
+setModels(projectModels || [])
 }}
     >
       {projects.map((project) => (
