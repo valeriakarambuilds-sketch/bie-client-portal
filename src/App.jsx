@@ -3,6 +3,14 @@ import './App.css'
 import { supabase } from './supabase'
 
 function App() {
+  const [activeSection, setActiveSection] = useState('overview')
+  const [userMode, setUserMode] = useState('client')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [session, setSession] = useState(null)
+  const [authChecked, setAuthChecked] = useState(false)
+  const [projects, setProjects] = useState([])
+const [selectedProject, setSelectedProject] = useState(null)
 useEffect(() => {
   const applySession = async (currentSession) => {
     setSession(currentSession)
@@ -39,6 +47,8 @@ useEffect(() => {
 }, [])
 
 useEffect(() => {
+  if (!session) return
+
   const loadData = async () => {
     const { data: meetingsData, error: meetingsError } = await supabase
       .from('meeting_notes')
@@ -121,16 +131,8 @@ if (infoError) {
   }
 
   loadData()
-}, [])
+}, [session])
 
-  const [activeSection, setActiveSection] = useState('overview')
-  const [userMode, setUserMode] = useState('client')
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [session, setSession] = useState(null)
-  const [authChecked, setAuthChecked] = useState(false)
-  const [projects, setProjects] = useState([])
-const [selectedProject, setSelectedProject] = useState(null)
   const [showStepForm, setShowStepForm] = useState(false)
   const [showMeetingForm, setShowMeetingForm] = useState(false)
   const [showInfoForm, setShowInfoForm] = useState(false)
