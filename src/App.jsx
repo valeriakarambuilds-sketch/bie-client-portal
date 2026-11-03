@@ -321,8 +321,8 @@ return (
         <div className="sidebar-footer">
           <div className="confidential-badge">
             <span>Portal confidencial</span>
-            <p>Información exclusiva del proyecto</p>
           </div>
+          <p className="confidential-note">Información exclusiva del proyecto</p>
           <button
             className="sidebar-logout"
             onClick={async () => {
