@@ -168,31 +168,12 @@ const [newMeeting, setNewMeeting] = useState({
 })
   const [newStep, setNewStep] = useState({
   task: '',
-  responsible: 'Cliente',
+  responsible: 'BIE Asesores',
   date: '',
   status: 'Pendiente',
 })
 
-  const [nextSteps, setNextSteps] = useState([
-    {
-      task: 'Enviar detalle de ventas por línea de negocio',
-      responsible: 'Cliente',
-      date: '29 Oct 2026',
-      status: 'Pendiente',
-    },
-    {
-      task: 'Actualizar proyecciones financieras',
-      responsible: 'BIE Asesores',
-      date: '30 Oct 2026',
-      status: 'En proceso',
-    },
-    {
-      task: 'Revisar resultados de valuación',
-      responsible: 'BIE Asesores',
-      date: '31 Oct 2026',
-      status: 'Próximo',
-    },
-  ])
+  const [nextSteps, setNextSteps] = useState([])
 
 const [meetingNotes, setMeetingNotes] = useState([])
 
@@ -213,7 +194,6 @@ const handleLogin = async () => {
   
 
   setSession(data.session)
-  setUserMode('bie')
 }
 
 if (!authChecked) {
