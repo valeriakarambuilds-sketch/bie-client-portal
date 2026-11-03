@@ -69,6 +69,16 @@ useEffect(() => {
     } else {
       setNextSteps(stepsData)
     }
+    const { data: modelsData, error: modelsError } = await supabase
+      .from('models')
+      .select('*')
+
+    if (modelsError) {
+      console.error('Error al cargar modelos:', modelsError)
+    } else {
+      setModels(modelsData)
+    }
+
     const { data: infoData, error: infoError } = await supabase
   .from('project_information')
   .select('*')
