@@ -1256,10 +1256,22 @@ if (infoError) {
                   {userMode === 'bie' ? (
   <select
     value={model.status}
-    onChange={(e) => {
+    onChange={async (e) => {
+      const newStatus = e.target.value
+
+      const { error } = await supabase
+        .from('models')
+        .update({ status: newStatus })
+        .eq('id', model.id)
+
+      if (error) {
+        console.error('Error al actualizar modelo:', error)
+        return
+      }
+
       const updatedModels = models.map((item) =>
-        item.name === model.name
-          ? { ...item, status: e.target.value }
+        item.id === model.id
+          ? { ...item, status: newStatus }
           : item
       )
       setModels(updatedModels)
