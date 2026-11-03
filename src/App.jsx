@@ -481,10 +481,11 @@ if (infoError) {
               </div>
 
               <div className="progress-box">
-                <span>Avance general</span>
-                <strong>{selectedProject?.progress ?? 0}%</strong>                <div className="progress">
-                  <div className="progress-fill"></div>
-                </div>
+                <span>Modelos trabajados</span>
+                <strong>{models.length}</strong>
+                <p>
+                  {models.filter((model) => model.status === 'Completado').length} completados
+                </p>
               </div>
             </section>
 
