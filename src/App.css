@@ -137,22 +137,23 @@ button {
 }
 
 .confidential-badge {
-  background: #7a263a;
-  color: white;
+  background: rgba(217, 165, 43, 0.16);
+  color: #a77a12;
   padding: 14px 15px;
   border-radius: 9px;
   margin-bottom: 12px;
 }
 
 .sidebar-footer .confidential-badge span {
-  color: white;
+  color: #a77a12;
   font-weight: 800;
   margin-bottom: 6px;
 }
 
-.sidebar-footer .confidential-badge p {
-  color: rgba(255, 255, 255, 0.82);
-  margin: 0;
+.sidebar-footer .confidential-note {
+  margin: -4px 4px 13px;
+  color: #8da8bd;
+  font-size: 11px;
 }
 
 .sidebar .sidebar-logout {
