@@ -1286,9 +1286,19 @@ if (infoError) {
 )}
 {userMode === 'bie' && (
   <button
-    onClick={() => {
+    onClick={async () => {
+      const { error } = await supabase
+        .from('models')
+        .delete()
+        .eq('id', model.id)
+
+      if (error) {
+        console.error('Error al eliminar modelo:', error)
+        return
+      }
+
       const updatedModels = models.filter(
-        (item) => item.name !== model.name
+        (item) => item.id !== model.id
       )
       setModels(updatedModels)
     }}
